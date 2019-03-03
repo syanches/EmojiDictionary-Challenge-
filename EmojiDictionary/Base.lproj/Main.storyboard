@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Root View Controller-->
+        <!--Emojis-->
         <scene sceneID="1r8-R6-vqM">
             <objects>
                 <tableViewController id="tRD-r0-LgA" customClass="EmojiTableTableViewController" customModule="EmojiDictionary" customModuleProvider="target" sceneMemberID="viewController">
@@ -48,7 +48,7 @@
                             <outlet property="delegate" destination="tRD-r0-LgA" id="hPV-ev-CQz"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="HLj-uf-Uml">
+                    <navigationItem key="navigationItem" title="Emojis" id="HLj-uf-Uml">
                         <barButtonItem key="leftBarButtonItem" systemItem="edit" id="NCc-EO-FFg">
                             <connections>
                                 <action selector="editButtonTapped:" destination="tRD-r0-LgA" id="jdg-3R-1Hi"/>
