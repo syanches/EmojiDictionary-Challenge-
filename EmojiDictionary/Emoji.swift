@@ -14,7 +14,6 @@ class Emoji {
     var name: String
     var description: String
     var usage: String
-    //var emojis: [Emoji]
     
     
     init(symbol: String, name: String, description: String, usage:String){
