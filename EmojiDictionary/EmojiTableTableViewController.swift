@@ -10,10 +10,6 @@ import UIKit
 
 class EmojiTableTableViewController: UITableViewController {
 
-
-    
-    
-    
     var emojis: [Emoji] = [
         Emoji(symbol: "😀", name: "Grinning Face", description: "A typical smiley face.", usage: "happiness"),
         Emoji(symbol: "😕", name: "Confused Face", description: "A confused, puzzled face.", usage: "unsure what to think; displeasure"),
@@ -33,6 +29,32 @@ class EmojiTableTableViewController: UITableViewController {
         Emoji(symbol: "🍠", name: "mnbCheckered Flag", description: "A black-and-white checkered flag.", usage: "completion")
     ]
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "EditEmoji" {
+            let indexPath = tableView.indexPathForSelectedRow!
+            let emoji = emojis[indexPath.row]
+            let navController = segue.destination as! UINavigationController
+            let addEditEmojiTableViewController = navController.topViewController as! AddEditEmojiTableViewController
+            
+            addEditEmojiTableViewController.emoji = emoji
+        }
+    }
+    
+    @IBAction func unwindToEmojiTableView(_ unwindSegue: UIStoryboardSegue) {
+        guard unwindSegue.identifier == "saveUnwind" else {return}
+        let sourceViewController = unwindSegue.source as! AddEditEmojiTableViewController
+        
+        if let emoji = sourceViewController.emoji{
+            if let selectedIndexPath = tableView.indexPathForSelectedRow {
+                emojis[selectedIndexPath.row] = emoji
+                tableView.reloadRows(at: [selectedIndexPath], with: .none)
+            } else {
+                let newIndexPath = IndexPath(row: emojis.count, section: 0)
+                emojis.append(emoji)
+                tableView.insertRows(at: [newIndexPath], with: .automatic)
+            }
+        }
+    }
     
     
     @IBAction func editButtonTapped(_ sender: UIBarButtonItem) {
@@ -44,6 +66,9 @@ class EmojiTableTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = editButtonItem
+   //     tableView.rowHeight = UITableView.automaticDimension
+          tableView.rowHeight = 60.0
+     //   tableView.estimatedRowHeight = 60.0
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -71,20 +96,19 @@ class EmojiTableTableViewController: UITableViewController {
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "EmojiCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "EmojiCell", for: indexPath) as! EmojiTableViewCell
         let emoji = emojis[indexPath.row]
-        cell.textLabel?.text = "\(emoji.symbol) - \(emoji.name)"
-        cell.detailTextLabel?.text = emoji.description
+    //    cell.textLabel?.text = "\(emoji.symbol) - \(emoji.name)"
+    //    cell.detailTextLabel?.text = emoji.description
+        cell.update(with: emoji)
         cell.showsReorderControl = true
         return cell
     }
     
-    
+ /*
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let emoji = emojis[indexPath.row]
-        print("\(emoji.symbol) \(indexPath)")
     }
-
+*/
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -93,17 +117,17 @@ class EmojiTableTableViewController: UITableViewController {
     }
     */
 
-    /*
+    
     // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            emojis.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
-    */
 
     
     // Override to support rearranging the table view.
@@ -116,7 +140,7 @@ class EmojiTableTableViewController: UITableViewController {
 
     
     override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return .none
+        return .delete
     }
     
     /*
